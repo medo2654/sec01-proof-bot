@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "dependencies": {
     "is-number": "^7.0.0",
-    "lodash": "4.17.0"
+    "lodash": "4.17.0",
+    "minimist": "0.0.8"
   }
 }

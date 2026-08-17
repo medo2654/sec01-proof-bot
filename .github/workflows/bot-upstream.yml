@@ -1,0 +1,23 @@
+name: Bot Upstream CI
+
+on:
+  repository_dispatch:
+    types: [bot-upstream-trigger]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record safe bot upstream run
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "BOT_UPSTREAM_RUN_STARTED"
+          echo "GITHUB_ACTOR=$GITHUB_ACTOR"
+          echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+          echo "GITHUB_TRIGGERING_ACTOR=$GITHUB_TRIGGERING_ACTOR"
+          test "$GITHUB_EVENT_NAME" = repository_dispatch
+          echo "BOT_UPSTREAM_RUN_COMPLETED"

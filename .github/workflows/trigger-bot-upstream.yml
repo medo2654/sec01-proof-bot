@@ -1,0 +1,27 @@
+name: Trigger Bot Upstream CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch bot upstream event
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.rest.repos.createDispatchEvent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event_type: 'bot-upstream-trigger',
+              client_payload: { source_run_id: String(context.runId) }
+            });
+            core.info(`BOT_UPSTREAM_DISPATCH_STATUS=${response.status}`);
+            core.info(`BOT_UPSTREAM_DISPATCH_ACTOR=${context.actor}`);

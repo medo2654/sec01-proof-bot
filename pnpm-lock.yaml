@@ -8,14 +8,36 @@ importers:
 
   .:
     dependencies:
+      axios:
+        specifier: 0.18.0
+        version: 0.18.0
       is-number:
         specifier: ^7.0.0
         version: 7.0.0
       lodash:
         specifier: 4.17.0
         version: 4.17.0
+      minimist:
+        specifier: 1.2.6
+        version: 1.2.6
 
 packages:
+
+  axios@0.18.0:
+    resolution: {integrity: sha512-14hgP2oTu6SPu+26Ofye6Se8u5Mmjc07a0ACHTJ5POKFU1Mtxz2IxSvaWy1O+QnbSa8XHy1gYz2E1l+G26XJdA==}
+    deprecated: Critical security vulnerability fixed in v0.21.1. For more information, see https://github.com/axios/axios/pull/3410
+
+  follow-redirects@1.16.0:
+    resolution: {integrity: sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+
+  is-buffer@1.1.6:
+    resolution: {integrity: sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==}
 
   is-number@7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
@@ -24,8 +46,24 @@ packages:
   lodash@4.17.0:
     resolution: {integrity: sha512-wXJoUnY8v5rCurNIL6tM0TOv/F6B2NzDzLzStNOQoX/i88s8hPGkYSRPMtcdjORIx1dHUB1lQVhsNyC9yjD/7w==}
 
+  minimist@1.2.6:
+    resolution: {integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==}
+
 snapshots:
+
+  axios@0.18.0:
+    dependencies:
+      follow-redirects: 1.16.0
+      is-buffer: 1.1.6
+    transitivePeerDependencies:
+      - debug
+
+  follow-redirects@1.16.0: {}
+
+  is-buffer@1.1.6: {}
 
   is-number@7.0.0: {}
 
   lodash@4.17.0: {}
+
+  minimist@1.2.6: {}

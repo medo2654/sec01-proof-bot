@@ -1,0 +1,31 @@
+name: Lab workflow_run in-progress actor probe
+
+on:
+  workflow_run:
+    workflows: ["Lab CI"]
+    types: [in_progress]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Capture in-progress event actor fields
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "GITHUB_ACTOR=$GITHUB_ACTOR"
+          echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+          jq '{action, workflow_run: {id: .workflow_run.id, event: .workflow_run.event, actor: .workflow_run.actor.login, triggering_actor: .workflow_run.triggering_actor.login, head_sha: .workflow_run.head_sha, status: .workflow_run.status}}' "$GITHUB_EVENT_PATH"
+      - name: Run authorization probe
+        uses: anthropics/claude-code-action@main
+        with:
+          allowed_bots: github-actions[bot]
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            Controlled in-progress probe. Do not execute commands, modify files, or access secrets. Answer exactly: IN_PROGRESS_PROBE_REACHED
+          claude_args: '--max-turns 1 --allowedTools "Read"'
+          show_full_output: 'false'

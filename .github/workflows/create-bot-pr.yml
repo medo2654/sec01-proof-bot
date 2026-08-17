@@ -40,10 +40,20 @@ jobs:
               parents: [baseSha]
             });
             await github.rest.git.createRef({ owner, repo, ref: `refs/heads/${branch}`, sha: commit.data.sha });
-            const pr = await github.rest.pulls.create({
-              owner, repo, title: 'Harmless bot-auth test PR', head: branch, base,
-              body: 'Disposable PR created by github-actions[bot] for the workflow_run authorization lab.'
-            });
+            let pr;
+            for (let attempt = 1; attempt <= 8; attempt++) {
+              try {
+                pr = await github.rest.pulls.create({
+                  owner, repo, title: 'Harmless bot-auth test PR', head: branch, base,
+                  body: 'Disposable PR created by github-actions[bot] for the workflow_run authorization lab.'
+                });
+                break;
+              } catch (e) {
+                core.warning(`PR creation attempt ${attempt} failed: ${e.message}`);
+                if (attempt === 8) throw e;
+                await new Promise(resolve => setTimeout(resolve, attempt * 5000));
+              }
+            }
             core.info(`BOT_PR_URL=${pr.data.html_url}`);
             core.info(`BOT_PR_NUMBER=${pr.data.number}`);
             core.info(`BOT_PR_USER=${pr.data.user.login}`);

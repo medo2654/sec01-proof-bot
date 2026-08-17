@@ -1,0 +1,44 @@
+name: Lab workflow_run authorization test
+
+on:
+  workflow_run:
+    workflows: ["Lab CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+  id-token: write
+
+jobs:
+  audit:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Capture event identities
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "GITHUB_ACTOR=$GITHUB_ACTOR"
+          echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+          echo "WORKFLOW_RUN_ACTOR=$(jq -r '.workflow_run.actor.login // \"<missing>\"' \"$GITHUB_EVENT_PATH\")"
+          echo "WORKFLOW_RUN_HEAD_SHA=$(jq -r '.workflow_run.head_sha // \"<missing>\"' \"$GITHUB_EVENT_PATH\")"
+          echo "WORKFLOW_RUN_HEAD_REPOSITORY=$(jq -r '.workflow_run.head_repository.full_name // \"<missing>\"' \"$GITHUB_EVENT_PATH\")"
+          jq '{action, workflow_run: {id: .workflow_run.id, event: .workflow_run.event, actor: .workflow_run.actor.login, head_sha: .workflow_run.head_sha, head_repository: .workflow_run.head_repository.full_name, conclusion: .workflow_run.conclusion, pull_requests: .workflow_run.pull_requests}}' "$GITHUB_EVENT_PATH"
+      - name: Checkout upstream commit for controlled observation
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 1
+      - name: Run Claude Action authorization test
+        id: claude
+        uses: anthropics/claude-code-action@d721746d683d812e669ce117bece55a85fbd9c3e
+        with:
+          allowed_bots: github-actions[bot]
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Controlled authorization audit. Do not execute shell commands, modify files, or access secrets. Read README.md only and answer exactly: AUDIT_REACHED_CLAUDE
+          claude_args: '--max-turns 1 --allowedTools "Read"'
+          show_full_output: 'false'

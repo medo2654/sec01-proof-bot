@@ -1,0 +1,8 @@
+{
+  "name": "claude-action-workflow-run-lab",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "is-number": "^7.0.0"
+  }
+}

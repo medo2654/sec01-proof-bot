@@ -1,0 +1,20 @@
+name: Lab CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Safe CI marker
+        run: |
+          set -euo pipefail
+          echo "Lab CI completed"
+          test -f README.md

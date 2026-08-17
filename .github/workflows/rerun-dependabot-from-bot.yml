@@ -1,0 +1,27 @@
+name: Rerun Dependabot CI from Actions bot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  actions: write
+
+jobs:
+  rerun:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rerun known Dependabot CI run
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const runId = 32057330044;
+            const result = await github.rest.actions.reRunWorkflow({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId
+            });
+            core.info(`RERUN_STATUS=${result.status}`);
+            core.info(`TRIGGERING_CONTEXT_ACTOR=${context.actor}`);

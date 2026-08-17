@@ -31,7 +31,7 @@ jobs:
         id: claude
         uses: anthropics/claude-code-action@main
         with:
-          allowed_bots: github-actions[bot]
+          allowed_bots: github-actions[bot],dependabot[bot]
           github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             Controlled authorization audit. Do not execute shell commands, modify files, or access secrets. Read README.md only and answer exactly: AUDIT_REACHED_CLAUDE

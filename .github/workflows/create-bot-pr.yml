@@ -2,6 +2,8 @@ name: Create harmless bot PR
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 permissions:
   contents: write

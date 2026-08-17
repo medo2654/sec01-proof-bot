@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "dependencies": {
-    "is-number": "^7.0.0"
+    "is-number": "^7.0.0",
+    "lodash": "4.17.0"
   }
 }
